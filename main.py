@@ -1,11 +1,11 @@
-#%%
 from src import transformacion as tr
+from src import visualizaciones as viz
 import pandas as pd
 print('✅ Librerías importadas')  
 
 
 bend = tr.cargar_y_procesar_excel_bend(ruta_archivo = "data\\bend.xlsm")
-print('✅ B-end cargado. \n Nos habrá salido un aviso ARRIBA que vamos a ignorar \n ')
+print('\n✅ Datos B-end cargados. \n ')
 bend['Commercial Model'] = bend['Commercial Model'].apply(tr.commercial_model_provided)
 bend_summary = bend[['id', 'quotation_ID', 'Source',
                     'Standard Services', 'Site ID', 'Lot', 'City', 'Country', 
@@ -17,7 +17,7 @@ bend_summary = bend[['id', 'quotation_ID', 'Source',
 
 
 ds = tr.cargar_y_procesar_ds(ruta_archivo = "data\\ds.xlsx")
-print('✅ Deal Specialist cargado \n')
+print('\n✅ Datos Deal Specialist cargados. Revisar si arriba  ⬆️  nos han salido ❌ IDs con dato faltante. \n')
 ds_summary = ds[['id', 'quotation_ID', 'Source', 
                 'Standard Services', 'Site ID', 'Lot', 'City', 'Country', 
                 'Main access speed UpStream (Kbps)', 'Main access speed DownStream (kbps)', 
@@ -30,7 +30,7 @@ ds_summary = ds[['id', 'quotation_ID', 'Source',
 
 
 pe = tr.cargar_y_procesar_pe(ruta_archivo = "data\\pe.csv")
-print('✅ motor cargado \n ')
+print('✅ Datos Motor cargados \n ')
 pe_summary = pe[['id', 'quotation_ID', 'Source', 
                 'standard_services_cd', 'site_id', 'lot_cd', 'city_name', 'country_name',
                 'main_access_speed_upstream_kbps_qt', 'main_access_speed_downstream_kbps_qt', 
@@ -57,6 +57,7 @@ pe_summary =  pe_summary.rename(columns = {
                                 'main_access_currency_cd': 'Main Access Currency'
                                 })
 
+print('-' * 50)
 
 bend_summary = tr.rename_columns(bend_summary, 'req')
 ds_summary = tr.rename_columns(ds_summary, 'ds')
@@ -74,22 +75,36 @@ df_merged_final = tr.fcv_currency_or_multicurrency(
     diccionario = tr.name_to_iso
 )
 
-
+print('-' * 50)
 
 df_merged_final['Commercial_model_changes'] = df_merged_final.apply(tr.same_commercial_model_quoted, axis=1)
 df_precios = df_merged_final[['id_req', 'Site_ID_req', 'City_req', 'Country_req', 'Commercial_Model_req', 'currency_ISO_req', 'Main_Access_Provider_(last_mile_Provider)_ds', 'FCV_ds_conv', 'same_currency_as_B-End_ds','Commercial_Model_ds','Commercial_Model_pe', 'Main_Access_Provider_(last_mile_Provider)_pe', 'main_access_mrc_amt_quoted_by_pe', 'FCV_pe_conv', 'same_currency_as_B-End_pe', 'Commercial_model_changes', 'delta PE vs DS']]
-
-
-df_merged_final.to_csv('merged_viz.csv', index = False) #lo guardamos para visualizaciones
+df_merged_final.to_csv('output\\merged_viz.csv', index = False)
 print('\n ✅ Archivos transformados para visualizaciones en python')
 
 
 tr.preparacion_floats_powerbi(df_precios)
 tr.preparacion_floats_powerbi(df_merged_final)
 
-df_merged_final.to_csv('merged.csv', index = False)
-df_precios.to_csv('precios.csv', index = False)
+df_merged_final.to_csv('output\\merged.csv', index = False)
+df_precios.to_csv('output\\precios.csv', index = False)
 
-print('✅ Archivos transformados para visualizaciones en PowerBI')
-print('Saldrá otro aviso que tendremos que ignorar')
+print('✅ Archivos transformados para visualizaciones en PowerBI.')
+print('-' * 50)
 
+
+
+df_viz = pd.read_csv("output\\merged_viz.csv")
+viz.generar_boxplot_delta(df_viz, save_path="output/delta_boxplot.png", show_plot=True)
+
+
+resultado = viz.separar_outliers(df_viz, 'delta PE vs DS')
+df_outliers = resultado['outliers']
+df_sin_outliers = resultado['sin_outliers']
+limite_inf = resultado['limite_inferior']
+limite_sup = resultado['limite_superior']
+
+
+
+viz.visualizar_outliers(df_outliers, resultado['limite_inferior'], resultado['limite_superior'], save_path="output/delta_outliers_distribution.png")
+viz.viz_delta_vs_tipo_servicio(df_viz, df_outliers, df_sin_outliers, save_path="output/delta_vs_tipo_servicio.png")
