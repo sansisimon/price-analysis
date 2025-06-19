@@ -42,8 +42,8 @@ price-analysis/
 Confirma que tienes un entorno virtual activado con el objetivo de aislar dependencias del proyecto e instala los requisitos dentro del entorno virtual. Ejecutar en el Terminal:
 
 ```bash
-# 1. Crear entorno virtual si no lo tienes. Se va a llamar venv por convención.
-python -m venv venv
+# 1. Crear entorno virtual si todavía no lo tienes. Se va a llamar venv por convención.
+python -m venv .venv
 
 # 2. Activar entorno virtual 
     # Windows
@@ -56,7 +56,28 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-## ▶️ Ejecución del ETL
+### ⚠️ 🚨 ¿Problemas con la instalación?
+Activación del entorno virtual en Windows (PowerShell). En Windows, si ves un error al intentar activar el entorno virtual como este:
+```bash
+.venv\Scripts\Activate : El módulo '.venv' no pudo cargarse...
+```
+Solución propuesta:
+
+```bash
+# 1. Ejecuta este comando una sola vez para permitir ejecutar scripts locales:
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# 2. Confirma con `S` si te pregunta.
+
+# 3. Luego vuelve a activar el entorno:
+    .venv\Scripts\activate
+    #⚠️ Esto solo hay que hacerlo una vez por usuario en tu ordenador.
+
+# 4. Instalar dependencias
+pip install -r requirements.txt
+```
+
+## ▶️ Ejecución del ETL 
 Ejecutamos el script principal `(main.py)` desde la terminal o consola, y le pasamos los argumentos para indicarle qué archivo queremos procesar y dónde queremos guardar el resultado.
 
 ```bash
@@ -72,3 +93,37 @@ Breve explicación del comando anterior:
 
 ## 🖥️ Visualización
 Los CSV generados pueden cargarse en Power BI para su análisis visual. Este proyecto incluye algunas funciones en visualizacion.py si se necesitan gráficos adicionales desde Python.
+
+
+## ✅ Pasos necesarios cada vez que quieras usar el ETL:
+1. Abre la terminal integrada de VSCode
+
+2. Activa el entorno virtual:
+```bash
+# Windows
+.venv\Scripts\activate
+
+# Mac/Linux
+source .venv/bin/activate
+```
+
+3. (Opcional) Verifica que estás usando el entorno correcto con el comando a cotninuación:
+
+```bash
+
+Get-Command python # Windows opción 1
+where python   # Windows opción 2
+
+which python   # Mac/Linux
+```
+Debería salir una ruta al python.exe:
+```bash
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Application     python.exe                                         ...        C:\Users\.....\price-analysis\.venv\Scripts\python.exe
+```
+
+4. Ejecuta tu script ETL como lo venías haciendo:
+```bash
+python main.py --input data/pe.csv --output output/precios.csv
+```
