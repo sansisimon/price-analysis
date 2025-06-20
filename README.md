@@ -33,6 +33,7 @@ price-analysis/
 │
 ├── main.py # Script principal
 ├── requirements.txt # Dependencias
+├── template.pbit # Plantilla de Power BI automatizada para las visualizaciones
 ├── README.md # Este archivo
 ├── .gitignore # Ignora archivos que no deben subirse
 ├── .venv/ # Entorno virtual (no incluido en el repo)
@@ -104,3 +105,16 @@ python main.py
 
 ## 🖥️ 5.  Visualización
 Los CSV generados pueden cargarse en Power BI para su análisis visual. Este proyecto incluye algunas funciones en visualizacion.py si se necesitan gráficos adicionales desde Python.
+
+## 6. 🗂️ Generación automática de rutas para Power BI
+Cada vez que se ejecute el proceso ETL (`main.py`), además de los archivos `CSV` generados, también se crearán archivos `.txt` con la ruta absoluta de cada uno.
+
+Estos archivos .txt permiten a Power BI encontrar automáticamente los CSV, independientemente de la ubicación del proyecto en tu equipo.
+
+| Archivo generado | Contenido |  |
+|---|---|---|
+| `output/merged_path.txt` | Ruta absoluta del archivo merged.csv| 
+| `output/precios_path.txt` | Ruta absoluta del archivo precios.csv | 
+
+
+✅ Importante: **Power BI está configurado para leer estas rutas al actualizar los datos.** No se necesita indicar manualmente la ubicación del CSV --> todo queda automatizado.

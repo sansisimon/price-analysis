@@ -82,7 +82,6 @@ df_precios = df_merged_final[['id_req', 'Site_ID_req', 'City_req', 'Country_req'
 df_merged_final.to_csv('output\\merged_viz.csv', index = False)
 print('\n ✅ Archivos transformados para visualizaciones en python')
 
-
 tr.preparacion_floats_powerbi(df_precios)
 tr.preparacion_floats_powerbi(df_merged_final)
 
@@ -92,6 +91,8 @@ df_precios.to_csv('output\\precios.csv', index = False)
 print('✅ Archivos transformados para visualizaciones en PowerBI.')
 print('-' * 50)
 
+tr.guardar_ruta_csv("output/merged.csv")
+tr.guardar_ruta_csv("output/precios.csv")
 
 
 df_viz = pd.read_csv("output\\merged_viz.csv")
@@ -108,3 +109,5 @@ limite_sup = resultado['limite_superior']
 
 viz.visualizar_outliers(df_outliers, resultado['limite_inferior'], resultado['limite_superior'], save_path="output/delta_outliers_distribution.png")
 viz.viz_delta_vs_tipo_servicio(df_viz, df_outliers, df_sin_outliers, save_path="output/delta_vs_tipo_servicio.png")
+
+

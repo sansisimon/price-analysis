@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import requests
-
+import os
 
 def cargar_y_procesar_excel_bend(ruta_archivo = "data\\bend.xlsm", hoja = "B-Ends"):
     """Carga y procesa el archivo Excel B-End.
@@ -496,4 +496,36 @@ def preparacion_floats_powerbi (df):
             df[col] = df[col].str.replace(".", ",")
 
 
+
+def guardar_ruta_csv(nombre_csv, nombre_txt=None):
+    """
+    Guarda la ruta absoluta del CSV indicado en un archivo .txt auxiliar. La finalidad de este archivo facilitar que los usuarios del ETL puedan saber fácilmente 
+    dónde está ubicado el CSV generado, para enlazarlo después en Power BI. Este .txt auxiliar conectaría el CSV con Power BI de manera automática 
+    (Power BI sólo funciona con rutas absolutas y no relativas).
+    
+    Args:
+        - nombre_csv (str): Ruta relativa del archivo CSV que quieres generar (por ejemplo: 'output/merged.csv'). OJO, ejecutamos desde main.py.
+        - nombre_txt (str, opcional): Ruta relativa del archivo .txt donde guardar la ruta. 
+                                    Si no se indica, se generará automáticamente con el mismo nombre base.
+                                    
+    Ejemplo de uso:
+        guardar_ruta_csv('output/merged.csv')               # Genera output/merged_path.txt
+        guardar_ruta_csv('output/precios.csv', 'ruta.txt')  # Genera ruta.txt con la ruta absoluta
+    """
+    
+    ruta_csv = os.path.abspath(nombre_csv)
+    
+    #Si el usuario NO proporciona "nombre_txt" al llamar a la función (es decir, no elige un nombre para el txt) --> el programa genera automáticamente un nombre por defecto.
+    if nombre_txt is None: 
+        file_name = os.path.basename(nombre_csv) #extraemos sólo el nombre del archivo del csv, sin la carpeta: ej. "output/merged.csv" --> "merged.csv"
+        base_name = os.path.splitext(file_name)[0]  #quitamos la extensión.csv, dejándonos solo el nombre base: ej. "merged.csv"--> "merged"
+        nombre_txt = f"output/{base_name}_path.txt" #generamos automáticamente el nombre del .txt asociado, usando ese base_name.
+    
+    #guardamos esa ruta en un archivo auxiliar:
+    #Abrimos (o creamos si no existe) un archivo de texto llamado path_to_csv.txt dentro de la carpeta output/
+    with open(nombre_txt, "w") as archivo: #"w" significa que lo abre en modo escritura, sobreescribiendo cualquier contenido previo // "archivo" es el archivo abierto donde vamos a escribir la ruta.
+        archivo.write(ruta_csv) #Escribe la ruta completa del CSV (output_file) dentro del archivo path_to_csv.txt.
+    
+
+    print(f"✅ Ruta guardada: {nombre_txt}, ➡️  Contenido (ruta del CSV): {ruta_csv}")
 # %%
