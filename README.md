@@ -85,12 +85,7 @@ Ejecutamos el script principal `(main.py)` desde la terminal o consola, y le pas
 python main.py 
 ```
 
-
-## 🖥️ 5.  Visualización
-Los CSV generados pueden cargarse en Power BI para su análisis visual. Este proyecto incluye algunas funciones en visualizacion.py si se necesitan gráficos adicionales desde Python.
-
-
-## ✅ 6. Pasos necesarios cada vez que quieras usar el ETL *(para la segunda vez que se usa y siguientes)* :
+### 🔍 *Pasos necesarios cada vez que quieras usar el ETL (para la segunda vez que se usa y siguientes)* :
 1. Abre la terminal integrada de VSCode.
 
 2. Activa el entorno virtual:
@@ -106,3 +101,6 @@ source .venv/bin/activate
 ```bash
 python main.py
 ```
+
+## 🖥️ 5.  Visualización
+Los CSV generados pueden cargarse en Power BI para su análisis visual. Este proyecto incluye algunas funciones en visualizacion.py si se necesitan gráficos adicionales desde Python.
